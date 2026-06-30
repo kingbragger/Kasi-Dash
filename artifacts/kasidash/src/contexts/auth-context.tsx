@@ -4,8 +4,8 @@ import { authApi, type AuthUser } from "@/lib/store-api";
 interface AuthContextType {
   user: AuthUser | null;
   loading: boolean;
-  login: (email: string, password: string) => Promise<void>;
-  register: (data: { name: string; email: string; password: string; phone?: string }) => Promise<void>;
+  login: (email: string, password: string) => Promise<AuthUser>;
+  register: (data: { name: string; email: string; password: string; phone?: string }) => Promise<AuthUser>;
   logout: () => Promise<void>;
   updateUser: (u: AuthUser) => void;
 }
@@ -23,14 +23,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       .finally(() => setLoading(false));
   }, []);
 
-  const login = async (email: string, password: string) => {
+  const login = async (email: string, password: string): Promise<AuthUser> => {
     const u = await authApi.login({ email, password });
     setUser(u);
+    return u;
   };
 
-  const register = async (data: { name: string; email: string; password: string; phone?: string }) => {
+  const register = async (data: { name: string; email: string; password: string; phone?: string }): Promise<AuthUser> => {
     const u = await authApi.register(data);
     setUser(u);
+    return u;
   };
 
   const logout = async () => {

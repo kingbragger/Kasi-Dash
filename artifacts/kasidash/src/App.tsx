@@ -1,12 +1,13 @@
-import { Switch, Route, Router as WouterRouter, Redirect } from "wouter";
+import { Switch, Route, Router as WouterRouter, Redirect, useLocation } from "wouter";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/theme-provider";
-import { AuthProvider } from "@/contexts/auth-context";
+import { AuthProvider, useAuth } from "@/contexts/auth-context";
 import { CartProvider } from "@/contexts/cart-context";
 import NotFound from "@/pages/not-found";
 import { Layout } from "@/components/layout";
+import { Loader2 } from "lucide-react";
 
 import Dashboard from "@/pages/dashboard";
 import Orders from "@/pages/orders";
@@ -39,18 +40,38 @@ const queryClient = new QueryClient({
   },
 });
 
-const STORE_PATHS = ["/store", "/auth", "/account"];
+function AdminGuard({ children }: { children: React.ReactNode }) {
+  const { user, loading } = useAuth();
+  const [location] = useLocation();
 
-function isStorePath(path: string) {
-  return STORE_PATHS.some(p => path === p || path.startsWith(p + "/"));
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
+
+  if (!user || user.role !== "admin") {
+    return <Redirect to={`/auth/login?next=${encodeURIComponent(location)}`} />;
+  }
+
+  return <>{children}</>;
 }
 
 function Router() {
   return (
     <Switch>
-      {/* Store / auth routes — no admin sidebar */}
+      {/* Root → store */}
+      <Route path="/">
+        <Redirect to="/store" />
+      </Route>
+
+      {/* Auth pages */}
       <Route path="/auth/login" component={Login} />
       <Route path="/auth/register" component={Register} />
+
+      {/* Customer store */}
       <Route path="/store" component={StoreLanding} />
       <Route path="/store/products/:id" component={ProductDetail} />
       <Route path="/store/cart" component={CartPage} />
@@ -59,31 +80,73 @@ function Router() {
       <Route path="/store/orders/:id" component={OrderDetail} />
       <Route path="/account" component={AccountPage} />
 
-      {/* Admin dashboard routes — wrapped in sidebar Layout */}
-      <Route>
-        {() => (
-          <Layout>
-            <Switch>
-              <Route path="/">
-                <Redirect to="/dashboard" />
-              </Route>
-              <Route path="/dashboard" component={Dashboard} />
-              <Route path="/orders" component={Orders} />
-              <Route path="/products" component={Products} />
-              <Route path="/customers" component={Customers} />
-              <Route path="/customers/:id" component={CustomerDetail} />
-              <Route path="/inventory" component={Inventory} />
-              <Route path="/analytics" component={Analytics} />
-              <Route path="/insights" component={Insights} />
-              <Route path="/notifications" component={Notifications} />
-              <Route path="/buildforge" component={BuildForge} />
-              <Route path="/buildforge/:id" component={BuildForgeSystem} />
-              <Route path="/settings" component={Settings} />
-              <Route component={NotFound} />
-            </Switch>
-          </Layout>
+      {/* Admin-only routes — behind role guard */}
+      <Route path="/dashboard">
+        <AdminGuard>
+          <Layout><Dashboard /></Layout>
+        </AdminGuard>
+      </Route>
+      <Route path="/orders">
+        <AdminGuard>
+          <Layout><Orders /></Layout>
+        </AdminGuard>
+      </Route>
+      <Route path="/products">
+        <AdminGuard>
+          <Layout><Products /></Layout>
+        </AdminGuard>
+      </Route>
+      <Route path="/customers">
+        <AdminGuard>
+          <Layout><Customers /></Layout>
+        </AdminGuard>
+      </Route>
+      <Route path="/customers/:id">
+        {(params) => (
+          <AdminGuard>
+            <Layout><CustomerDetail /></Layout>
+          </AdminGuard>
         )}
       </Route>
+      <Route path="/inventory">
+        <AdminGuard>
+          <Layout><Inventory /></Layout>
+        </AdminGuard>
+      </Route>
+      <Route path="/analytics">
+        <AdminGuard>
+          <Layout><Analytics /></Layout>
+        </AdminGuard>
+      </Route>
+      <Route path="/insights">
+        <AdminGuard>
+          <Layout><Insights /></Layout>
+        </AdminGuard>
+      </Route>
+      <Route path="/notifications">
+        <AdminGuard>
+          <Layout><Notifications /></Layout>
+        </AdminGuard>
+      </Route>
+      <Route path="/buildforge">
+        <AdminGuard>
+          <Layout><BuildForge /></Layout>
+        </AdminGuard>
+      </Route>
+      <Route path="/buildforge/:id">
+        {() => (
+          <AdminGuard>
+            <Layout><BuildForgeSystem /></Layout>
+          </AdminGuard>
+        )}
+      </Route>
+      <Route path="/settings">
+        <AdminGuard>
+          <Layout><Settings /></Layout>
+        </AdminGuard>
+      </Route>
+
+      <Route component={NotFound} />
     </Switch>
   );
 }

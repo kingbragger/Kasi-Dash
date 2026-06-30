@@ -10,6 +10,7 @@ import { Store, Eye, EyeOff, Loader2 } from "lucide-react";
 export default function Login() {
   const { login } = useAuth();
   const [, setLocation] = useLocation();
+  const nextParam = new URLSearchParams(window.location.search).get("next") || "";
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -21,8 +22,14 @@ export default function Login() {
     setError("");
     setLoading(true);
     try {
-      await login(email, password);
-      setLocation("/store");
+      const user = await login(email, password);
+      if (nextParam && nextParam.startsWith("/")) {
+        setLocation(nextParam);
+      } else if (user.role === "admin") {
+        setLocation("/dashboard");
+      } else {
+        setLocation("/store");
+      }
     } catch (err: any) {
       setError(err.message || "Login failed. Please try again.");
     } finally {
