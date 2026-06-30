@@ -10,7 +10,9 @@ import {
   Bell, 
   Blocks, 
   Settings,
-  Menu
+  Menu,
+  Store,
+  ExternalLink
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useGetHealthCheck } from "@workspace/api-client-react"; // Or whatever the health check hook is named, actually it's useHealthCheck
@@ -66,6 +68,16 @@ export function Layout({ children }: { children: React.ReactNode }) {
           })}
         </div>
 
+        <div className="px-3 pb-3">
+          <Link href="/store">
+            <div className="flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-primary hover:bg-primary/10 transition-colors cursor-pointer border border-primary/20 bg-primary/5">
+              <Store className="w-4 h-4" />
+              Visit Store
+              <ExternalLink className="w-3 h-3 ml-auto opacity-60" />
+            </div>
+          </Link>
+        </div>
+
         <div className="p-4 border-t border-border text-xs text-muted-foreground flex items-center justify-between">
           <span>System Status</span>
           <span className="flex items-center gap-1.5">
@@ -85,7 +97,13 @@ export function Layout({ children }: { children: React.ReactNode }) {
             <span className="font-mono font-bold">KasiDash</span>
           </div>
           <div className="flex-1" />
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
+            <Link href="/store">
+              <Button variant="outline" size="sm" className="gap-1.5 text-primary border-primary/30 hover:bg-primary/10">
+                <Store className="w-4 h-4" />
+                <span className="hidden sm:inline">Visit Store</span>
+              </Button>
+            </Link>
             <Link href="/notifications">
               <Button variant="ghost" size="icon" className="relative">
                 <Bell className="w-4 h-4" />
