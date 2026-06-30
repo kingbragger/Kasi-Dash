@@ -1,0 +1,256 @@
+# Build a Full E-Commerce System inside KasiDash & BuildForge Tech
+
+Extend the existing Shopify app project and add a fully working internal e-commerce module called:
+
+## 🛒 Store Name
+
+* KasiDash & BuildForge Tech Store
+
+---
+
+## 👤 Admin Setup
+
+Hardcode the admin account:
+
+* Email: **[ndlovuhenry73@gmail.com](mailto:ndlovuhenry73@gmail.com)**
+* Role: ADMIN (full access)
+
+Admin privileges:
+
+* Manage products
+* View all orders
+* Manage users
+* Update stock
+* View payments
+* Cancel/refund orders
+* Access BuildForge systems
+
+---
+
+## 🔐 Authentication System
+
+Build secure authentication with:
+
+* User registration
+* User login
+* Forgot password (email reset link)
+* JWT or session-based auth
+* Password hashing (bcrypt)
+* Email verification (optional but recommended)
+
+Every customer must:
+
+* Register before checkout
+* Login to access cart and orders
+
+---
+
+## 👥 Customer Features
+
+Customers can:
+
+* Register account
+* Login/logout
+* Reset password
+* Update profile
+* View order history
+* Track orders
+
+Store user data securely in PostgreSQL using Prisma.
+
+---
+
+## 🛍️ Product System
+
+Build full product management:
+
+* Product listing page
+* Product details page
+* Categories
+* Search & filtering
+* Stock quantity tracking
+* Product images
+* Price updates (admin only)
+
+---
+
+## 🛒 Cart System (IMPORTANT)
+
+Cart must be fully functional:
+
+* Add to cart
+* Remove item
+* Update quantity
+* Persistent cart (saved per user)
+* Cart total calculation
+* Apply discounts (optional)
+
+Cart must NOT break on refresh.
+
+---
+
+## 💳 Checkout System
+
+Checkout flow:
+
+1. User reviews cart
+2. Enters shipping details
+3. Chooses payment method
+4. Confirms order
+
+Order status:
+
+* Pending
+* Paid
+* Processing
+* Shipped
+* Delivered
+* Cancelled
+
+---
+
+## 💰 Payment Integration
+
+Integrate payments using Ozow
+
+Requirements:
+
+* Redirect to Ozow checkout
+* Handle payment callback/webhook
+* Verify payment success securely
+* Only mark order as PAID after confirmation
+* Store transaction ID
+* Handle failed payments properly
+
+---
+
+## 📦 Order Management
+
+Admins can:
+
+* View all orders
+* Filter by status
+* View customer details
+* Confirm payment status
+* Update shipping status
+* Cancel orders
+
+Customers can:
+
+* View their own orders
+* Track order status
+
+---
+
+## 🔔 Notifications System
+
+Notify users for:
+
+* Order placed
+* Payment successful
+* Order shipped
+* Password reset request
+* Low stock alerts (admin)
+
+Use email or in-app notifications.
+
+---
+
+## 🧱 BuildForge Tech Module Integration
+
+Connect store to BuildForge tools:
+
+Allow admin to generate:
+
+* Sales reports
+* Invoice PDFs
+* Customer analytics dashboards
+* Inventory tracking systems
+* Expense tracking linked to sales
+
+---
+
+## 🧑‍💻 Admin Dashboard
+
+Create a powerful dashboard:
+
+* Total sales
+* Orders today
+* Revenue charts
+* Top products
+* New customers
+* Low stock alerts
+* Payment status overview
+
+---
+
+## 🎨 UI Requirements
+
+* Modern SaaS UI (Stripe / Shopify style)
+* Responsive (mobile + desktop)
+* Dark mode + light mode
+* Clean admin panel
+* Fast loading pages
+
+Use:
+
+* Tailwind CSS
+* Recharts for analytics
+* ShadCN UI (preferred)
+
+---
+
+## 🔐 Security Requirements
+
+* Secure API routes
+* Input validation (Zod)
+* CSRF protection
+* Rate limiting
+* Environment variables for secrets
+* No exposed payment keys
+
+---
+
+## 🗄️ Database (Prisma Models)
+
+Include:
+
+* User
+* Product
+* Cart
+* CartItem
+* Order
+* OrderItem
+* Payment
+* AdminLogs
+
+---
+
+## 🚀 Deployment Requirements
+
+Must be fully deployable on:
+
+* GitHub
+* Vercel
+
+Include:
+
+* .env.example
+* Prisma migrations
+* Setup guide
+* Seed script for admin + sample products
+
+---
+
+## ✅ FINAL OUTPUT
+
+Generate a production-ready full-stack application with:
+
+* Working authentication
+* Fully functional cart
+* Payment integration (Ozow)
+* Admin dashboard
+* Customer store experience
+* BuildForge analytics layer
+
+NO placeholder features. Everything must be functional and production-grade.

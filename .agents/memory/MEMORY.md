@@ -1,1 +1,2 @@
 - [KasiDash stack & structure](kasidash-stack.md) — React Vite + Express 5 + Drizzle ORM + PostgreSQL; pnpm monorepo with all conventions
+- [E-commerce module architecture](ecommerce-arch.md) — auth JWT in cookie+header, DB-persisted cart, Ozow payment, admin seeded on startup

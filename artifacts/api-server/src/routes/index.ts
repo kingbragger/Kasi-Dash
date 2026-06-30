@@ -10,10 +10,20 @@ import notificationsRouter from "./notifications";
 import settingsRouter from "./settings";
 import insightsRouter from "./insights";
 import buildforgeRouter from "./buildforge";
+import authRouter from "./auth";
+import storeRouter from "./store";
+import cartRouter from "./cart";
+import checkoutRouter from "./checkout";
+import paymentsRouter from "./payments";
 
 const router: IRouter = Router();
 
 router.use(healthRouter);
+router.use(authRouter);
+router.use(storeRouter);
+router.use(cartRouter);
+router.use(checkoutRouter);
+router.use(paymentsRouter);
 router.use(dashboardRouter);
 router.use(ordersRouter);
 router.use(productsRouter);
