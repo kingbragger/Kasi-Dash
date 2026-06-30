@@ -3,20 +3,40 @@ info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: KasiDash & BuildForge API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: dashboard
+    description: Dashboard summary and metrics
+  - name: orders
+    description: Order management
+  - name: products
+    description: Product management
+  - name: customers
+    description: Customer management
+  - name: inventory
+    description: Inventory management
+  - name: analytics
+    description: Analytics and charts
+  - name: notifications
+    description: Notification management
+  - name: settings
+    description: Merchant settings
+  - name: insights
+    description: AI business insights
+  - name: buildforge
+    description: BuildForge module - system builder
+
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,6 +44,759 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  # Dashboard
+  /dashboard/summary:
+    get:
+      operationId: getDashboardSummary
+      tags: [dashboard]
+      summary: Get dashboard summary metrics
+      responses:
+        "200":
+          description: Dashboard summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardSummary"
+
+  /dashboard/revenue-chart:
+    get:
+      operationId: getRevenueChart
+      tags: [dashboard]
+      summary: Get revenue chart data (last 30 days)
+      responses:
+        "200":
+          description: Revenue chart data
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RevenueDataPoint"
+
+  /dashboard/top-products:
+    get:
+      operationId: getTopProducts
+      tags: [dashboard]
+      summary: Get top selling products
+      responses:
+        "200":
+          description: Top products
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TopProduct"
+
+  /dashboard/recent-orders:
+    get:
+      operationId: getRecentOrders
+      tags: [dashboard]
+      summary: Get recent orders for dashboard
+      responses:
+        "200":
+          description: Recent orders
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Order"
+
+  # Orders
+  /orders:
+    get:
+      operationId: listOrders
+      tags: [orders]
+      summary: List all orders with optional status filter
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [pending, paid, fulfilled, cancelled, refunded]
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Orders list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrdersPage"
+
+  /orders/{id}:
+    get:
+      operationId: getOrder
+      tags: [orders]
+      summary: Get a single order
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Order
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+        "404":
+          description: Not found
+
+  /orders/{id}/fulfil:
+    post:
+      operationId: fulfilOrder
+      tags: [orders]
+      summary: Mark order as fulfilled
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Updated order
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+
+  /orders/{id}/cancel:
+    post:
+      operationId: cancelOrder
+      tags: [orders]
+      summary: Cancel an order
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Updated order
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+
+  /orders/stats:
+    get:
+      operationId: getOrderStats
+      tags: [orders]
+      summary: Get order statistics by status
+      responses:
+        "200":
+          description: Order stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderStats"
+
+  # Products
+  /products:
+    get:
+      operationId: listProducts
+      tags: [products]
+      summary: List all products
+      parameters:
+        - name: search
+          in: query
+          schema:
+            type: string
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [active, draft, archived]
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Products list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductsPage"
+    post:
+      operationId: createProduct
+      tags: [products]
+      summary: Create a product
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProductInput"
+      responses:
+        "201":
+          description: Created product
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+
+  /products/{id}:
+    get:
+      operationId: getProduct
+      tags: [products]
+      summary: Get a single product
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Product
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+    patch:
+      operationId: updateProduct
+      tags: [products]
+      summary: Update a product
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProductUpdate"
+      responses:
+        "200":
+          description: Updated product
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+    delete:
+      operationId: deleteProduct
+      tags: [products]
+      summary: Delete a product
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /products/bulk-update:
+    post:
+      operationId: bulkUpdateProducts
+      tags: [products]
+      summary: Bulk update product prices/status
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BulkProductUpdate"
+      responses:
+        "200":
+          description: Updated count
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  updated:
+                    type: integer
+                required: [updated]
+
+  # Customers
+  /customers:
+    get:
+      operationId: listCustomers
+      tags: [customers]
+      summary: List all customers
+      parameters:
+        - name: search
+          in: query
+          schema:
+            type: string
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Customers list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CustomersPage"
+
+  /customers/{id}:
+    get:
+      operationId: getCustomer
+      tags: [customers]
+      summary: Get a single customer with order history
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Customer detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CustomerDetail"
+
+  /customers/stats:
+    get:
+      operationId: getCustomerStats
+      tags: [customers]
+      summary: Get customer stats (repeat rate, locations, LTV)
+      responses:
+        "200":
+          description: Customer stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CustomerStats"
+
+  # Inventory
+  /inventory:
+    get:
+      operationId: listInventory
+      tags: [inventory]
+      summary: List inventory items
+      parameters:
+        - name: search
+          in: query
+          schema:
+            type: string
+        - name: low_stock
+          in: query
+          schema:
+            type: boolean
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Inventory list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InventoryPage"
+
+  /inventory/{id}:
+    patch:
+      operationId: updateInventoryItem
+      tags: [inventory]
+      summary: Update stock quantity for an inventory item
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InventoryUpdate"
+      responses:
+        "200":
+          description: Updated inventory item
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InventoryItem"
+
+  /inventory/alerts:
+    get:
+      operationId: getInventoryAlerts
+      tags: [inventory]
+      summary: Get low-stock alerts
+      responses:
+        "200":
+          description: Low-stock alert items
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/InventoryItem"
+
+  # Analytics
+  /analytics/revenue:
+    get:
+      operationId: getRevenueAnalytics
+      tags: [analytics]
+      summary: Get revenue analytics data
+      parameters:
+        - name: period
+          in: query
+          schema:
+            type: string
+            enum: [7d, 30d, 90d, 12m]
+      responses:
+        "200":
+          description: Revenue analytics
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RevenueAnalytics"
+
+  /analytics/orders:
+    get:
+      operationId: getOrderAnalytics
+      tags: [analytics]
+      summary: Get order analytics data
+      parameters:
+        - name: period
+          in: query
+          schema:
+            type: string
+            enum: [7d, 30d, 90d, 12m]
+      responses:
+        "200":
+          description: Order analytics
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderAnalytics"
+
+  /analytics/customers:
+    get:
+      operationId: getCustomerAnalytics
+      tags: [analytics]
+      summary: Get customer growth analytics
+      parameters:
+        - name: period
+          in: query
+          schema:
+            type: string
+            enum: [7d, 30d, 90d, 12m]
+      responses:
+        "200":
+          description: Customer analytics
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CustomerAnalytics"
+
+  /analytics/product-sales:
+    get:
+      operationId: getProductSalesAnalytics
+      tags: [analytics]
+      summary: Get product sales breakdown
+      responses:
+        "200":
+          description: Product sales analytics
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ProductSalesDataPoint"
+
+  # Notifications
+  /notifications:
+    get:
+      operationId: listNotifications
+      tags: [notifications]
+      summary: List all notifications
+      responses:
+        "200":
+          description: Notifications list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Notification"
+
+  /notifications/{id}/read:
+    post:
+      operationId: markNotificationRead
+      tags: [notifications]
+      summary: Mark a notification as read
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Updated notification
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Notification"
+
+  /notifications/read-all:
+    post:
+      operationId: markAllNotificationsRead
+      tags: [notifications]
+      summary: Mark all notifications as read
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  updated:
+                    type: integer
+                required: [updated]
+
+  # Settings
+  /settings:
+    get:
+      operationId: getSettings
+      tags: [settings]
+      summary: Get merchant settings
+      responses:
+        "200":
+          description: Settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MerchantSettings"
+    patch:
+      operationId: updateSettings
+      tags: [settings]
+      summary: Update merchant settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MerchantSettingsUpdate"
+      responses:
+        "200":
+          description: Updated settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MerchantSettings"
+
+  # AI Insights
+  /insights:
+    get:
+      operationId: getInsights
+      tags: [insights]
+      summary: Get AI-generated business insights
+      responses:
+        "200":
+          description: Business insights
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BusinessInsights"
+
+  # BuildForge
+  /buildforge/systems:
+    get:
+      operationId: listSystems
+      tags: [buildforge]
+      summary: List all built systems
+      responses:
+        "200":
+          description: Systems list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BFSystem"
+    post:
+      operationId: createSystem
+      tags: [buildforge]
+      summary: Create a new system
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BFSystemInput"
+      responses:
+        "201":
+          description: Created system
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BFSystem"
+
+  /buildforge/systems/{id}:
+    get:
+      operationId: getSystem
+      tags: [buildforge]
+      summary: Get a system with its modules
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: System detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BFSystemDetail"
+    patch:
+      operationId: updateSystem
+      tags: [buildforge]
+      summary: Update a system
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BFSystemUpdate"
+      responses:
+        "200":
+          description: Updated system
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BFSystem"
+    delete:
+      operationId: deleteSystem
+      tags: [buildforge]
+      summary: Delete a system
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /buildforge/systems/{id}/modules:
+    post:
+      operationId: addModule
+      tags: [buildforge]
+      summary: Add a module to a system
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BFModuleInput"
+      responses:
+        "201":
+          description: Created module
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BFModule"
+
+  /buildforge/modules/{id}:
+    patch:
+      operationId: updateModule
+      tags: [buildforge]
+      summary: Update a module (reorder, rename, config)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BFModuleUpdate"
+      responses:
+        "200":
+          description: Updated module
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BFModule"
+    delete:
+      operationId: deleteModule
+      tags: [buildforge]
+      summary: Delete a module
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /buildforge/templates:
+    get:
+      operationId: listSystemTemplates
+      tags: [buildforge]
+      summary: List available system templates
+      responses:
+        "200":
+          description: Templates list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BFTemplate"
+
 components:
   schemas:
     HealthStatus:
@@ -31,6 +804,614 @@ components:
       properties:
         status:
           type: string
-      required:
-        - status
+      required: [status]
 
+    DashboardSummary:
+      type: object
+      properties:
+        todayRevenue:
+          type: number
+        todayOrders:
+          type: integer
+        totalProducts:
+          type: integer
+        totalCustomers:
+          type: integer
+        averageOrderValue:
+          type: number
+        conversionRate:
+          type: number
+        revenueGrowth:
+          type: number
+        ordersGrowth:
+          type: number
+        customersGrowth:
+          type: number
+      required:
+        [todayRevenue, todayOrders, totalProducts, totalCustomers,
+         averageOrderValue, conversionRate, revenueGrowth, ordersGrowth, customersGrowth]
+
+    RevenueDataPoint:
+      type: object
+      properties:
+        date:
+          type: string
+        revenue:
+          type: number
+        orders:
+          type: integer
+      required: [date, revenue, orders]
+
+    TopProduct:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        revenue:
+          type: number
+        unitsSold:
+          type: integer
+        imageUrl:
+          type: ["string", "null"]
+      required: [id, name, revenue, unitsSold]
+
+    Order:
+      type: object
+      properties:
+        id:
+          type: integer
+        orderNumber:
+          type: string
+        customerName:
+          type: string
+        customerEmail:
+          type: string
+        status:
+          type: string
+          enum: [pending, paid, fulfilled, cancelled, refunded]
+        total:
+          type: number
+        itemCount:
+          type: integer
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+      required: [id, orderNumber, customerName, customerEmail, status, total, itemCount, createdAt, updatedAt]
+
+    OrdersPage:
+      type: object
+      properties:
+        orders:
+          type: array
+          items:
+            $ref: "#/components/schemas/Order"
+        total:
+          type: integer
+        page:
+          type: integer
+        limit:
+          type: integer
+      required: [orders, total, page, limit]
+
+    OrderStats:
+      type: object
+      properties:
+        pending:
+          type: integer
+        paid:
+          type: integer
+        fulfilled:
+          type: integer
+        cancelled:
+          type: integer
+        refunded:
+          type: integer
+      required: [pending, paid, fulfilled, cancelled, refunded]
+
+    Product:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: ["string", "null"]
+        price:
+          type: number
+        compareAtPrice:
+          type: ["number", "null"]
+        status:
+          type: string
+          enum: [active, draft, archived]
+        inventory:
+          type: integer
+        imageUrl:
+          type: ["string", "null"]
+        category:
+          type: ["string", "null"]
+        sku:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+      required: [id, title, price, status, inventory, createdAt, updatedAt]
+
+    ProductInput:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+        compareAtPrice:
+          type: ["number", "null"]
+        status:
+          type: string
+          enum: [active, draft, archived]
+        inventory:
+          type: integer
+        imageUrl:
+          type: ["string", "null"]
+        category:
+          type: ["string", "null"]
+        sku:
+          type: ["string", "null"]
+      required: [title, price, status, inventory]
+
+    ProductUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+        compareAtPrice:
+          type: ["number", "null"]
+        status:
+          type: string
+          enum: [active, draft, archived]
+        inventory:
+          type: integer
+        imageUrl:
+          type: ["string", "null"]
+        category:
+          type: ["string", "null"]
+        sku:
+          type: ["string", "null"]
+
+    ProductsPage:
+      type: object
+      properties:
+        products:
+          type: array
+          items:
+            $ref: "#/components/schemas/Product"
+        total:
+          type: integer
+        page:
+          type: integer
+        limit:
+          type: integer
+      required: [products, total, page, limit]
+
+    BulkProductUpdate:
+      type: object
+      properties:
+        ids:
+          type: array
+          items:
+            type: integer
+        price:
+          type: ["number", "null"]
+        status:
+          type: ["string", "null"]
+      required: [ids]
+
+    Customer:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        location:
+          type: ["string", "null"]
+        totalOrders:
+          type: integer
+        totalSpent:
+          type: number
+        lifetimeValue:
+          type: number
+        isRepeat:
+          type: boolean
+        createdAt:
+          type: string
+      required: [id, name, email, totalOrders, totalSpent, lifetimeValue, isRepeat, createdAt]
+
+    CustomerDetail:
+      type: object
+      properties:
+        customer:
+          $ref: "#/components/schemas/Customer"
+        orders:
+          type: array
+          items:
+            $ref: "#/components/schemas/Order"
+      required: [customer, orders]
+
+    CustomersPage:
+      type: object
+      properties:
+        customers:
+          type: array
+          items:
+            $ref: "#/components/schemas/Customer"
+        total:
+          type: integer
+        page:
+          type: integer
+        limit:
+          type: integer
+      required: [customers, total, page, limit]
+
+    CustomerStats:
+      type: object
+      properties:
+        totalCustomers:
+          type: integer
+        repeatCustomerRate:
+          type: number
+        averageLifetimeValue:
+          type: number
+        topLocations:
+          type: array
+          items:
+            type: object
+            properties:
+              location:
+                type: string
+              count:
+                type: integer
+            required: [location, count]
+      required: [totalCustomers, repeatCustomerRate, averageLifetimeValue, topLocations]
+
+    InventoryItem:
+      type: object
+      properties:
+        id:
+          type: integer
+        productId:
+          type: integer
+        productTitle:
+          type: string
+        sku:
+          type: ["string", "null"]
+        quantity:
+          type: integer
+        lowStockThreshold:
+          type: integer
+        isLowStock:
+          type: boolean
+        imageUrl:
+          type: ["string", "null"]
+        updatedAt:
+          type: string
+      required: [id, productId, productTitle, quantity, lowStockThreshold, isLowStock, updatedAt]
+
+    InventoryPage:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/InventoryItem"
+        total:
+          type: integer
+        page:
+          type: integer
+        limit:
+          type: integer
+      required: [items, total, page, limit]
+
+    InventoryUpdate:
+      type: object
+      properties:
+        quantity:
+          type: integer
+        lowStockThreshold:
+          type: integer
+      required: [quantity]
+
+    RevenueAnalytics:
+      type: object
+      properties:
+        dataPoints:
+          type: array
+          items:
+            $ref: "#/components/schemas/RevenueDataPoint"
+        totalRevenue:
+          type: number
+        growth:
+          type: number
+      required: [dataPoints, totalRevenue, growth]
+
+    OrderAnalytics:
+      type: object
+      properties:
+        dataPoints:
+          type: array
+          items:
+            $ref: "#/components/schemas/RevenueDataPoint"
+        totalOrders:
+          type: integer
+        growth:
+          type: number
+      required: [dataPoints, totalOrders, growth]
+
+    CustomerAnalytics:
+      type: object
+      properties:
+        dataPoints:
+          type: array
+          items:
+            type: object
+            properties:
+              date:
+                type: string
+              newCustomers:
+                type: integer
+              totalCustomers:
+                type: integer
+            required: [date, newCustomers, totalCustomers]
+        totalNewCustomers:
+          type: integer
+        growth:
+          type: number
+      required: [dataPoints, totalNewCustomers, growth]
+
+    ProductSalesDataPoint:
+      type: object
+      properties:
+        productId:
+          type: integer
+        productTitle:
+          type: string
+        unitsSold:
+          type: integer
+        revenue:
+          type: number
+      required: [productId, productTitle, unitsSold, revenue]
+
+    Notification:
+      type: object
+      properties:
+        id:
+          type: integer
+        type:
+          type: string
+          enum: [new_order, low_inventory, failed_payment, high_sales, app_update]
+        title:
+          type: string
+        message:
+          type: string
+        isRead:
+          type: boolean
+        createdAt:
+          type: string
+      required: [id, type, title, message, isRead, createdAt]
+
+    MerchantSettings:
+      type: object
+      properties:
+        id:
+          type: integer
+        businessName:
+          type: string
+        currency:
+          type: string
+        timezone:
+          type: string
+        theme:
+          type: string
+          enum: [light, dark, system]
+        notifyNewOrders:
+          type: boolean
+        notifyLowInventory:
+          type: boolean
+        notifyFailedPayments:
+          type: boolean
+        lowStockThreshold:
+          type: integer
+        updatedAt:
+          type: string
+      required:
+        [id, businessName, currency, timezone, theme,
+         notifyNewOrders, notifyLowInventory, notifyFailedPayments, lowStockThreshold, updatedAt]
+
+    MerchantSettingsUpdate:
+      type: object
+      properties:
+        businessName:
+          type: string
+        currency:
+          type: string
+        timezone:
+          type: string
+        theme:
+          type: string
+          enum: [light, dark, system]
+        notifyNewOrders:
+          type: boolean
+        notifyLowInventory:
+          type: boolean
+        notifyFailedPayments:
+          type: boolean
+        lowStockThreshold:
+          type: integer
+
+    BusinessInsights:
+      type: object
+      properties:
+        lowStockWarnings:
+          type: array
+          items:
+            type: string
+        bestSellers:
+          type: array
+          items:
+            type: string
+        needsPromotion:
+          type: array
+          items:
+            type: string
+        estimatedMonthlyRevenue:
+          type: number
+        customerTrends:
+          type: array
+          items:
+            type: string
+        marketingRecommendations:
+          type: array
+          items:
+            type: string
+        generatedAt:
+          type: string
+      required:
+        [lowStockWarnings, bestSellers, needsPromotion, estimatedMonthlyRevenue,
+         customerTrends, marketingRecommendations, generatedAt]
+
+    BFSystem:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        type:
+          type: string
+          enum: [invoice, employee, crm, booking, delivery, stock, expense, payroll, custom]
+        description:
+          type: ["string", "null"]
+        status:
+          type: string
+          enum: [draft, active, archived]
+        moduleCount:
+          type: integer
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+      required: [id, name, type, status, moduleCount, createdAt, updatedAt]
+
+    BFSystemInput:
+      type: object
+      properties:
+        name:
+          type: string
+        type:
+          type: string
+          enum: [invoice, employee, crm, booking, delivery, stock, expense, payroll, custom]
+        description:
+          type: string
+      required: [name, type]
+
+    BFSystemUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        status:
+          type: string
+          enum: [draft, active, archived]
+
+    BFModule:
+      type: object
+      properties:
+        id:
+          type: integer
+        systemId:
+          type: integer
+        name:
+          type: string
+        type:
+          type: string
+          enum: [table, form, dashboard, report, chart, permissions]
+        config:
+          type: object
+        sortOrder:
+          type: integer
+        createdAt:
+          type: string
+      required: [id, systemId, name, type, config, sortOrder, createdAt]
+
+    BFModuleInput:
+      type: object
+      properties:
+        name:
+          type: string
+        type:
+          type: string
+          enum: [table, form, dashboard, report, chart, permissions]
+        config:
+          type: object
+        sortOrder:
+          type: integer
+      required: [name, type]
+
+    BFModuleUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        config:
+          type: object
+        sortOrder:
+          type: integer
+
+    BFSystemDetail:
+      type: object
+      properties:
+        system:
+          $ref: "#/components/schemas/BFSystem"
+        modules:
+          type: array
+          items:
+            $ref: "#/components/schemas/BFModule"
+      required: [system, modules]
+
+    BFTemplate:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        type:
+          type: string
+          enum: [invoice, employee, crm, booking, delivery, stock, expense, payroll, custom]
+        description:
+          type: string
+        modules:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+              type:
+                type: string
+            required: [name, type]
+      required: [id, name, type, description, modules]

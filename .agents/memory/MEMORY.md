@@ -1,0 +1,1 @@
+- [KasiDash stack & structure](kasidash-stack.md) — React Vite + Express 5 + Drizzle ORM + PostgreSQL; pnpm monorepo with all conventions

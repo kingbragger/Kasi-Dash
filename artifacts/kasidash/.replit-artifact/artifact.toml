@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "KasiDash & BuildForge"
+version = "1.0.0"
+id = "artifacts/kasidash"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 24381
+
+[services.development]
+run = "pnpm --filter @workspace/kasidash run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/kasidash", "run", "build" ]
+publicDir = "artifacts/kasidash/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "24381"
+BASE_PATH = "/"
