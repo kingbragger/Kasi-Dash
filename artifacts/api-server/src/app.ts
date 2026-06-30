@@ -7,26 +7,32 @@ import { logger } from "./lib/logger";
 
 const app: Express = express();
 
+// ALLOWED_ORIGINS: comma-separated list of allowed origins.
+// On Replit: "*" (allow all).
+// On production: set to your Netlify URL, e.g. "https://yoursite.netlify.app,https://yourdomain.com"
+const rawOrigins = process.env.ALLOWED_ORIGINS || "*";
+const allowedOrigins = rawOrigins === "*" ? true : rawOrigins.split(",").map(o => o.trim());
+
 app.use(
   pinoHttp({
     logger,
     serializers: {
       req(req) {
-        return {
-          id: req.id,
-          method: req.method,
-          url: req.url?.split("?")[0],
-        };
+        return { id: req.id, method: req.method, url: req.url?.split("?")[0] };
       },
       res(res) {
-        return {
-          statusCode: res.statusCode,
-        };
+        return { statusCode: res.statusCode };
       },
     },
   }),
 );
-app.use(cors({ origin: true, credentials: true }));
+
+app.use(
+  cors({
+    origin: allowedOrigins,
+    credentials: true,
+  }),
+);
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

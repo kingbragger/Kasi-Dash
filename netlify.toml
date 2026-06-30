@@ -1,0 +1,21 @@
+[build]
+  command   = "pnpm --filter @workspace/kasidash run build"
+  publish   = "artifacts/kasidash/dist/public"
+  base      = "."
+
+[build.environment]
+  NODE_VERSION = "20"
+  BASE_PATH    = "/"
+  # Set VITE_API_URL in the Netlify dashboard → Site Settings → Environment variables
+  # Example: VITE_API_URL = "https://your-api.onrender.com"
+
+[[redirects]]
+  from   = "/*"
+  to     = "/index.html"
+  status = 200
+
+[context.production.environment]
+  NODE_ENV = "production"
+
+[context.deploy-preview.environment]
+  NODE_ENV = "production"
