@@ -1,0 +1,277 @@
+# Build a Shopify Embedded App called KasiDash & BuildForge
+
+Build a production-ready Shopify embedded application called **KasiDash & BuildForge**.
+
+## Tech Stack
+
+Use:
+
+* Next.js 15 (App Router)
+* TypeScript
+* Shopify App Bridge
+* Shopify Polaris
+* Shopify Admin API
+* Prisma ORM
+* PostgreSQL (Neon or Supabase)
+* Tailwind CSS
+* Vercel compatible deployment
+* Node.js runtime
+* Environment variables
+* ESLint
+* Responsive UI
+
+The project must run perfectly on **Vercel** without modifications.
+
+---
+
+## Authentication
+
+Implement Shopify OAuth.
+
+Store:
+
+* Shop domain
+* Access token
+* Installation date
+* Merchant information
+
+Automatically reconnect merchants after installation.
+
+---
+
+## Dashboard
+
+Create a beautiful modern dashboard showing:
+
+* Today's revenue
+* Orders
+* Products
+* Customers
+* Average order value
+* Conversion metrics
+* Top-selling products
+* Revenue graph
+* Sales by day
+* Recent orders
+
+---
+
+## AI Business Insights
+
+Generate business recommendations such as:
+
+* Low stock warnings
+* Best-selling products
+* Products that need promotion
+* Estimated monthly revenue
+* Customer purchasing trends
+* Marketing recommendations
+
+---
+
+## Inventory Management
+
+Allow merchants to:
+
+* View inventory
+* Search inventory
+* Filter inventory
+* Edit stock
+* View low stock items
+* Receive stock alerts
+
+---
+
+## Customer Management
+
+Display:
+
+* Customer list
+* Customer lifetime value
+* Order history
+* Customer locations
+* Repeat customer percentage
+
+---
+
+## Product Management
+
+Allow merchants to:
+
+* View products
+* Search products
+* Filter products
+* Edit titles
+* Edit prices
+* Update inventory
+* Bulk update products
+
+---
+
+## Order Management
+
+Display:
+
+* Pending orders
+* Paid orders
+* Fulfilled orders
+* Cancelled orders
+* Refund status
+
+Provide quick actions.
+
+---
+
+## Analytics
+
+Include charts for:
+
+* Revenue
+* Orders
+* Customers
+* Product sales
+* Monthly growth
+* Daily growth
+
+Use Recharts.
+
+---
+
+## Notifications
+
+Show notifications for:
+
+* New orders
+* Low inventory
+* Failed payments
+* High sales
+* App updates
+
+---
+
+## Merchant Settings
+
+Allow merchants to:
+
+* Change business name
+* Currency
+* Time zone
+* Theme
+* Notification preferences
+
+---
+
+## BuildForge Module
+
+Include a second module called **BuildForge**.
+
+This module helps businesses build internal systems.
+
+Allow users to create:
+
+* Invoice systems
+* Employee systems
+* CRM systems
+* Booking systems
+* Delivery systems
+* Stock management systems
+* Expense trackers
+* Payroll systems
+
+Provide a drag-and-drop builder with:
+
+* Tables
+* Forms
+* Dashboards
+* Reports
+* Charts
+* Role permissions
+
+---
+
+## Billing
+
+Prepare Shopify Billing API integration for:
+
+### Free Plan
+
+* Dashboard
+* Analytics
+* Products
+
+### Pro Plan
+
+* AI Insights
+* Advanced Reports
+* BuildForge
+* Unlimited dashboards
+
+---
+
+## UI
+
+Use a clean premium interface similar to:
+
+* Shopify Admin
+* Stripe Dashboard
+* Linear
+* Vercel Dashboard
+
+Support:
+
+* Dark mode
+* Light mode
+* Mobile responsive
+* Tablet responsive
+
+---
+
+## Security
+
+Implement:
+
+* CSRF protection
+* Secure sessions
+* Rate limiting
+* Environment variables
+* API validation
+* Error handling
+
+---
+
+## Folder Structure
+
+Use a scalable architecture:
+
+* app/
+* components/
+* lib/
+* prisma/
+* hooks/
+* services/
+* utils/
+* api/
+* types/
+* public/
+
+---
+
+## Deployment
+
+The application must:
+
+* Deploy directly to Vercel
+* Support GitHub integration
+* Use PostgreSQL
+* Work in production
+* Include a README with deployment instructions
+* Include a `.env.example` file
+* Include Prisma migrations
+
+---
+
+## Deliverables
+
+Generate a complete production-ready Shopify application with no placeholder code.
+
+Every feature must be fully implemented, well documented, optimized for performance, and ready for submission to the Shopify App Store after configuration.
