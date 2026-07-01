@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
-import { authApi, type AuthUser } from "@/lib/store-api";
+import { authApi, setStoredToken, clearStoredToken, type AuthUser } from "@/lib/store-api";
 
 interface AuthContextType {
   user: AuthUser | null;
@@ -25,18 +25,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = async (email: string, password: string): Promise<AuthUser> => {
     const u = await authApi.login({ email, password });
+    if (u.token) setStoredToken(u.token);
     setUser(u);
     return u;
   };
 
   const register = async (data: { name: string; email: string; password: string; phone?: string }): Promise<AuthUser> => {
     const u = await authApi.register(data);
+    if (u.token) setStoredToken(u.token);
     setUser(u);
     return u;
   };
 
   const logout = async () => {
-    await authApi.logout();
+    await authApi.logout().catch(() => {});
+    clearStoredToken();
     setUser(null);
   };
 

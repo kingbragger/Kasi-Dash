@@ -1,9 +1,25 @@
 const BASE = (import.meta.env.VITE_API_URL ?? "").replace(/\/$/, "") + "/api";
 
+const TOKEN_KEY = "kbt_auth_token";
+
+export function setStoredToken(token: string) {
+  localStorage.setItem(TOKEN_KEY, token);
+}
+
+export function clearStoredToken() {
+  localStorage.removeItem(TOKEN_KEY);
+}
+
+function getStoredToken(): string | null {
+  return localStorage.getItem(TOKEN_KEY);
+}
+
 async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
+  const token = getStoredToken();
+  const authHeader: Record<string, string> = token ? { Authorization: `Bearer ${token}` } : {};
   const res = await fetch(`${BASE}${path}`, {
     credentials: "include",
-    headers: { "Content-Type": "application/json", ...options.headers },
+    headers: { "Content-Type": "application/json", ...authHeader, ...options.headers },
     ...options,
   });
   if (!res.ok) {
