@@ -10,14 +10,31 @@ import { useToast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
 import { useTheme } from "@/components/theme-provider";
-import { Loader2 } from "lucide-react";
+import { Loader2, Database, CheckCircle2 } from "lucide-react";
 import type { MerchantSettingsUpdateTheme } from "@workspace/api-client-react";
+
+async function seedProducts(): Promise<{ inserted: number; total: number; message: string }> {
+  const base = (typeof import.meta !== "undefined" ? (import.meta as any).env?.VITE_API_URL ?? "" : "").replace(/\/$/, "");
+  const token = localStorage.getItem("kbt_auth_token");
+  const res = await fetch(`${base}/api/admin/seed-products`, {
+    method: "POST",
+    credentials: "include",
+    headers: { ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+  });
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({ error: res.statusText }));
+    throw new Error(body.error || "Seed failed");
+  }
+  return res.json();
+}
 
 export default function Settings() {
   const { data: settings, isLoading } = useGetSettings({ query: { queryKey: getGetSettingsQueryKey() } });
   const updateSettings = useUpdateSettings();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const [seeding, setSeeding] = useState(false);
+  const [seedResult, setSeedResult] = useState<string | null>(null);
   const { setTheme } = useTheme();
 
   const [formData, setFormData] = useState({
@@ -213,6 +230,48 @@ export default function Settings() {
           <Button onClick={handleSave} disabled={updateSettings.isPending} className="ml-auto">
             {updateSettings.isPending && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
             Save Settings
+          </Button>
+        </CardFooter>
+      </Card>
+      {/* Seed Products */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Database className="w-5 h-5" /> Seed Store Products
+          </CardTitle>
+          <CardDescription>
+            Populate the production database with the 10 sample products. Safe to run multiple times — duplicates are skipped.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {seedResult && (
+            <div className="flex items-start gap-2 text-sm text-green-600 bg-green-500/10 border border-green-500/20 rounded-lg px-4 py-3 mb-4">
+              <CheckCircle2 className="w-4 h-4 mt-0.5 shrink-0" />
+              {seedResult}
+            </div>
+          )}
+          <p className="text-sm text-muted-foreground">
+            This will insert: 2× Apple iPhones, 2× Dell laptops, 2× Dell desktops, 2× Sony PS4 Pro consoles (10 total).
+          </p>
+        </CardContent>
+        <CardFooter className="border-t border-border px-6 py-4">
+          <Button
+            onClick={async () => {
+              setSeeding(true);
+              setSeedResult(null);
+              try {
+                const result = await seedProducts();
+                setSeedResult(result.message);
+                toast({ title: "Products seeded", description: result.message });
+              } catch (err: any) {
+                toast({ variant: "destructive", title: "Seed failed", description: err.message });
+              } finally {
+                setSeeding(false);
+              }
+            }}
+            disabled={seeding}
+          >
+            {seeding ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Seeding…</> : "Seed Products Now"}
           </Button>
         </CardFooter>
       </Card>

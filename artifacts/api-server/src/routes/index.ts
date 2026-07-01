@@ -15,6 +15,7 @@ import storeRouter from "./store";
 import cartRouter from "./cart";
 import checkoutRouter from "./checkout";
 import paymentsRouter from "./payments";
+import adminSeedRouter from "./admin-seed";
 
 const router: IRouter = Router();
 
@@ -34,5 +35,6 @@ router.use(notificationsRouter);
 router.use(settingsRouter);
 router.use(insightsRouter);
 router.use(buildforgeRouter);
+router.use(adminSeedRouter);
 
 export default router;
