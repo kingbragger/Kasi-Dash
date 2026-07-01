@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Search, ShoppingCart, Tag, Package, Filter } from "lucide-react";
+import { Search, ShoppingCart, Tag, Package, Filter, AlertCircle, RefreshCw } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 function ProductCard({ product }: { product: StoreProduct }) {
@@ -124,12 +124,14 @@ export default function StoreLanding() {
   const [products, setProducts] = useState<StoreProduct[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [total, setTotal] = useState(0);
 
   const fetchProducts = async () => {
     setLoading(true);
+    setError(null);
     try {
       const data = await storeApi.listProducts({
         search: search || undefined,
@@ -139,8 +141,8 @@ export default function StoreLanding() {
       setProducts(data.products);
       setTotal(data.total);
       if (data.categories.length > 0) setCategories(data.categories);
-    } catch {
-      /* ignore */
+    } catch (err: any) {
+      setError(err.message || "Could not load products. The server may be starting up — please try again in a moment.");
     } finally {
       setLoading(false);
     }
@@ -201,24 +203,40 @@ export default function StoreLanding() {
         </p>
       )}
 
+      {/* Error state */}
+      {error && !loading && (
+        <div className="col-span-full flex flex-col items-center justify-center py-16 text-center gap-4">
+          <AlertCircle className="w-12 h-12 text-destructive/60" />
+          <div>
+            <p className="font-medium text-destructive mb-1">Could not load products</p>
+            <p className="text-sm text-muted-foreground max-w-sm">{error}</p>
+          </div>
+          <Button size="sm" variant="outline" onClick={fetchProducts}>
+            <RefreshCw className="w-4 h-4 mr-2" /> Try again
+          </Button>
+        </div>
+      )}
+
       {/* Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-        {loading
-          ? Array.from({ length: 8 }).map((_, i) => <ProductSkeleton key={i} />)
-          : products.length > 0
-          ? products.map(p => <ProductCard key={p.id} product={p} />)
-          : (
-            <div className="col-span-full text-center py-16">
-              <Package className="w-12 h-12 text-muted-foreground/40 mx-auto mb-4" />
-              <p className="text-muted-foreground">No products found</p>
-              {(search || selectedCategory) && (
-                <Button variant="ghost" size="sm" className="mt-2" onClick={() => { setSearch(""); setSelectedCategory(""); }}>
-                  Clear filters
-                </Button>
-              )}
-            </div>
-          )}
-      </div>
+      {!error && (
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+          {loading
+            ? Array.from({ length: 8 }).map((_, i) => <ProductSkeleton key={i} />)
+            : products.length > 0
+            ? products.map(p => <ProductCard key={p.id} product={p} />)
+            : (
+              <div className="col-span-full text-center py-16">
+                <Package className="w-12 h-12 text-muted-foreground/40 mx-auto mb-4" />
+                <p className="text-muted-foreground">No products found</p>
+                {(search || selectedCategory) && (
+                  <Button variant="ghost" size="sm" className="mt-2" onClick={() => { setSearch(""); setSelectedCategory(""); }}>
+                    Clear filters
+                  </Button>
+                )}
+              </div>
+            )}
+        </div>
+      )}
     </StoreLayout>
   );
 }
