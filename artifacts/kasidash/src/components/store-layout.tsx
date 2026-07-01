@@ -32,9 +32,18 @@ export function StoreLayout({ children }: { children: React.ReactNode }) {
             {/* Logo */}
             <Link href="/store">
               <div className="flex items-center gap-2 cursor-pointer">
-                <div className="w-8 h-8 bg-primary rounded-md flex items-center justify-center">
-                  <Store className="w-4 h-4 text-primary-foreground" />
-                </div>
+                <svg width="32" height="32" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect width="180" height="180" rx="40" fill="url(#sl-bg)"/>
+                  <defs>
+                    <linearGradient id="sl-bg" x1="0" y1="0" x2="180" y2="180" gradientUnits="userSpaceOnUse">
+                      <stop offset="0%" stopColor="#16a34a"/>
+                      <stop offset="100%" stopColor="#15803d"/>
+                    </linearGradient>
+                  </defs>
+                  <rect x="44" y="76" width="92" height="68" rx="10" fill="white" fillOpacity="0.95"/>
+                  <path d="M68 76 Q68 46 90 46 Q112 46 112 76" stroke="white" strokeWidth="9" strokeLinecap="round" fill="none"/>
+                  <path d="M97 96 L84 108 L91 108 L83 124 L96 110 L89 110 Z" fill="#16a34a"/>
+                </svg>
                 <span className="font-bold text-lg hidden sm:block">KBT Store</span>
               </div>
             </Link>

@@ -41,10 +41,19 @@ export function Layout({ children }: { children: React.ReactNode }) {
       {/* Sidebar */}
       <aside className="w-64 border-r border-border bg-sidebar flex-shrink-0 flex flex-col hidden md:flex">
         <div className="h-16 flex items-center px-6 border-b border-border">
-          <div className="font-mono font-bold tracking-tight text-xl flex items-center gap-2">
-            <div className="w-6 h-6 bg-primary rounded-sm flex items-center justify-center">
-              <span className="text-primary-foreground text-xs leading-none">K</span>
-            </div>
+          <div className="font-bold tracking-tight text-xl flex items-center gap-2.5">
+            <svg width="28" height="28" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="180" height="180" rx="40" fill="url(#lg-sb)"/>
+              <defs>
+                <linearGradient id="lg-sb" x1="0" y1="0" x2="180" y2="180" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stopColor="#16a34a"/>
+                  <stop offset="100%" stopColor="#15803d"/>
+                </linearGradient>
+              </defs>
+              <rect x="44" y="76" width="92" height="68" rx="10" fill="white" fillOpacity="0.95"/>
+              <path d="M68 76 Q68 46 90 46 Q112 46 112 76" stroke="white" strokeWidth="9" strokeLinecap="round" fill="none"/>
+              <path d="M97 96 L84 108 L91 108 L83 124 L96 110 L89 110 Z" fill="#16a34a"/>
+            </svg>
             KasiDash
           </div>
         </div>

@@ -45,9 +45,18 @@ export default function Login() {
 
         <Link href="/store">
           <div className="flex items-center gap-3 cursor-pointer">
-            <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-lg">K</span>
-            </div>
+            <svg width="40" height="40" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="180" height="180" rx="40" fill="url(#lp-bg)"/>
+              <defs>
+                <linearGradient id="lp-bg" x1="0" y1="0" x2="180" y2="180" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stopColor="#16a34a"/>
+                  <stop offset="100%" stopColor="#15803d"/>
+                </linearGradient>
+              </defs>
+              <rect x="44" y="76" width="92" height="68" rx="10" fill="white" fillOpacity="0.95"/>
+              <path d="M68 76 Q68 46 90 46 Q112 46 112 76" stroke="white" strokeWidth="9" strokeLinecap="round" fill="none"/>
+              <path d="M97 96 L84 108 L91 108 L83 124 L96 110 L89 110 Z" fill="#16a34a"/>
+            </svg>
             <span className="text-white font-bold text-xl">KBT Store</span>
           </div>
         </Link>
@@ -91,9 +100,18 @@ export default function Login() {
           <div className="lg:hidden flex justify-center">
             <Link href="/store">
               <div className="flex items-center gap-2 cursor-pointer">
-                <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center">
-                  <span className="text-primary-foreground font-bold text-lg">K</span>
-                </div>
+                <svg width="36" height="36" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect width="180" height="180" rx="40" fill="url(#lm-bg)"/>
+                  <defs>
+                    <linearGradient id="lm-bg" x1="0" y1="0" x2="180" y2="180" gradientUnits="userSpaceOnUse">
+                      <stop offset="0%" stopColor="#16a34a"/>
+                      <stop offset="100%" stopColor="#15803d"/>
+                    </linearGradient>
+                  </defs>
+                  <rect x="44" y="76" width="92" height="68" rx="10" fill="white" fillOpacity="0.95"/>
+                  <path d="M68 76 Q68 46 90 46 Q112 46 112 76" stroke="white" strokeWidth="9" strokeLinecap="round" fill="none"/>
+                  <path d="M97 96 L84 108 L91 108 L83 124 L96 110 L89 110 Z" fill="#16a34a"/>
+                </svg>
                 <span className="font-bold text-xl">KBT Store</span>
               </div>
             </Link>
@@ -157,21 +175,13 @@ export default function Login() {
             </Button>
           </form>
 
-          <div className="space-y-4">
+          <div className="space-y-3">
             <p className="text-center text-sm text-muted-foreground">
               Don't have an account?{" "}
               <Link href="/auth/register">
                 <span className="text-primary hover:underline cursor-pointer font-semibold">Create one free</span>
               </Link>
             </p>
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-border" />
-              </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-background px-2 text-muted-foreground">Admin access</span>
-              </div>
-            </div>
             <p className="text-center text-sm text-muted-foreground">
               Merchant?{" "}
               <Link href="/dashboard">

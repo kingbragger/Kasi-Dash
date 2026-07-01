@@ -1,3 +1,15 @@
 <svg width="180" height="180" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect width="180" height="180" rx="36" fill="#FF3C00"/>
+  <rect width="180" height="180" rx="40" fill="url(#bg)"/>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="180" y2="180" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#16a34a"/>
+      <stop offset="100%" stop-color="#15803d"/>
+    </linearGradient>
+  </defs>
+  <!-- Shopping bag body -->
+  <rect x="44" y="76" width="92" height="68" rx="10" fill="white" fill-opacity="0.95"/>
+  <!-- Bag handle left -->
+  <path d="M68 76 Q68 46 90 46 Q112 46 112 76" stroke="white" stroke-width="9" stroke-linecap="round" fill="none"/>
+  <!-- Lightning bolt / tech accent -->
+  <path d="M97 96 L84 108 L91 108 L83 124 L96 110 L89 110 Z" fill="#16a34a"/>
 </svg>
