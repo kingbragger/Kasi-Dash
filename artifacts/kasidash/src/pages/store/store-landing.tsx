@@ -124,6 +124,7 @@ export default function StoreLanding() {
   const [products, setProducts] = useState<StoreProduct[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMsg, setLoadingMsg] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
@@ -132,19 +133,28 @@ export default function StoreLanding() {
   const fetchProducts = async () => {
     setLoading(true);
     setError(null);
-    try {
-      const data = await storeApi.listProducts({
-        search: search || undefined,
-        category: selectedCategory || undefined,
-        limit: 50,
-      });
-      setProducts(data.products);
-      setTotal(data.total);
-      if (data.categories.length > 0) setCategories(data.categories);
-    } catch (err: any) {
-      setError(err.message || "Could not load products. The server may be starting up — please try again in a moment.");
-    } finally {
-      setLoading(false);
+    const maxAttempts = 4;
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+      try {
+        const data = await storeApi.listProducts({
+          search: search || undefined,
+          category: selectedCategory || undefined,
+          limit: 50,
+        });
+        setProducts(data.products);
+        setTotal(data.total);
+        if (data.categories.length > 0) setCategories(data.categories);
+        setLoading(false);
+        return;
+      } catch (err: any) {
+        if (attempt < maxAttempts) {
+          setLoadingMsg("Server is waking up, please wait…");
+          await new Promise(r => setTimeout(r, attempt * 8000));
+        } else {
+          setError(err.message || "Could not load products. Check your internet connection and try again.");
+          setLoading(false);
+        }
+      }
     }
   };
 
@@ -221,7 +231,14 @@ export default function StoreLanding() {
       {!error && (
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
           {loading
-            ? Array.from({ length: 8 }).map((_, i) => <ProductSkeleton key={i} />)
+            ? <>
+                {loadingMsg && (
+                  <div className="col-span-full text-center py-2 text-sm text-muted-foreground animate-pulse">
+                    {loadingMsg}
+                  </div>
+                )}
+                {Array.from({ length: 8 }).map((_, i) => <ProductSkeleton key={i} />)}
+              </>
             : products.length > 0
             ? products.map(p => <ProductCard key={p.id} product={p} />)
             : (
