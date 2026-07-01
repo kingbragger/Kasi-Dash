@@ -16,10 +16,18 @@ function getStoredToken(): string | null {
 
 async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   const token = getStoredToken();
-  const authHeader: Record<string, string> = token ? { Authorization: `Bearer ${token}` } : {};
+  const hasBody = options.body != null;
+
+  // Only attach Content-Type when there is a body — sending it on GET requests
+  // triggers an unnecessary CORS preflight that fails when Render is cold-starting.
+  // Authorization is always included when a token exists (required for protected routes).
+  const headers: Record<string, string> = {};
+  if (hasBody) headers["Content-Type"] = "application/json";
+  if (token) headers["Authorization"] = `Bearer ${token}`;
+
   const res = await fetch(`${BASE}${path}`, {
     credentials: "include",
-    headers: { "Content-Type": "application/json", ...authHeader, ...options.headers },
+    headers: { ...headers, ...options.headers },
     ...options,
   });
   if (!res.ok) {
