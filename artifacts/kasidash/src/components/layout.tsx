@@ -15,7 +15,6 @@ import {
   ExternalLink
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useGetHealthCheck } from "@workspace/api-client-react"; // Or whatever the health check hook is named, actually it's useHealthCheck
 import { useHealthCheck } from "@workspace/api-client-react";
 import { Button } from "@/components/ui/button";
 

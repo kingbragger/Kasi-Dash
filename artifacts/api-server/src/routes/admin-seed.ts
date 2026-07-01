@@ -4,7 +4,7 @@ import { requireAuth, requireAdmin } from "../middleware/auth";
 
 const router = Router();
 
-const SEED_PRODUCTS = [
+export const SEED_PRODUCTS = [
   {
     title: "Apple iPhone 11 - Unlocked (Very Good Condition)",
     description: "Apple iPhone 11 with A13 Bionic chip, dual rear cameras, 4K video recording, and Face ID. Network unlocked. Available in 64GB, 128GB and 256GB across six colours. Very good refurbished condition.",
