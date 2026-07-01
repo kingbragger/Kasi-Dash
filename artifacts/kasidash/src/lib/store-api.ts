@@ -25,11 +25,16 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   if (hasBody) headers["Content-Type"] = "application/json";
   if (token) headers["Authorization"] = `Bearer ${token}`;
 
-  const res = await fetch(`${BASE}${path}`, {
-    credentials: "include",
-    headers: { ...headers, ...options.headers },
-    ...options,
-  });
+  let res: Response;
+  try {
+    res = await fetch(`${BASE}${path}`, {
+      credentials: "include",
+      headers: { ...headers, ...options.headers },
+      ...options,
+    });
+  } catch {
+    throw new Error("Cannot reach the server. Please check your connection and try again.");
+  }
   if (!res.ok) {
     const body = await res.json().catch(() => ({ error: res.statusText }));
     throw new Error(body.error || "Request failed");
