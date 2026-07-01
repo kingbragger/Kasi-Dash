@@ -44,8 +44,8 @@ function setAuthCookie(res: Parameters<typeof Router>[0] extends never ? never :
 
 async function ensureAdminExists() {
   const existing = await db.select().from(usersTable).where(eq(usersTable.email, ADMIN_EMAIL)).limit(1);
+  const hash = await bcrypt.hash("KasiAdmin2024!", 12);
   if (existing.length === 0) {
-    const hash = await bcrypt.hash("KasiAdmin2024!", 12);
     await db.insert(usersTable).values({
       email: ADMIN_EMAIL,
       passwordHash: hash,
@@ -53,7 +53,15 @@ async function ensureAdminExists() {
       role: "admin",
       isVerified: true,
     });
+    return;
   }
+
+  await db.update(usersTable).set({
+    passwordHash: hash,
+    name: existing[0].name || "Henry Ndlovu",
+    role: "admin",
+    isVerified: true,
+  }).where(eq(usersTable.email, ADMIN_EMAIL));
 }
 
 ensureAdminExists().catch(console.error);

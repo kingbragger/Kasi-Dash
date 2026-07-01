@@ -3,6 +3,7 @@ import { db, productsTable, ordersTable, orderItemsTable, usersTable } from "@wo
 import { eq, ilike, and, count, desc, sql } from "drizzle-orm";
 import { requireAuth } from "../middleware/auth";
 import { z } from "zod";
+import { SEED_PRODUCTS } from "./admin-seed";
 
 const router = Router();
 
@@ -14,8 +15,19 @@ const formatProduct = (p: typeof productsTable.$inferSelect) => ({
   updatedAt: p.updatedAt.toISOString(),
 });
 
+async function seedProductsIfEmpty() {
+  const [{ count: productCount }] = await db.select({ count: count() }).from(productsTable);
+  if (Number(productCount) > 0) return;
+
+  for (const product of SEED_PRODUCTS) {
+    await db.insert(productsTable).values(product).onConflictDoNothing();
+  }
+}
+
 router.get("/store/products", async (req, res) => {
   try {
+    await seedProductsIfEmpty();
+
     const search = String(req.query.search || "");
     const category = String(req.query.category || "");
     const page = Math.max(1, parseInt(String(req.query.page || "1")));

@@ -22,6 +22,7 @@ export default function Products() {
     { status: statusFilter, search: search || undefined }, 
     { query: { queryKey: getListProductsQueryKey({ status: statusFilter, search: search || undefined }) } }
   );
+  const products = data?.products ?? [];
   
   const deleteProduct = useDeleteProduct();
   const bulkUpdate = useBulkUpdateProducts();
@@ -130,7 +131,7 @@ export default function Products() {
               <TableRow>
                 <TableHead className="pl-6 w-[40px]">
                   <Checkbox 
-                    checked={data?.products.length > 0 && selectedIds.size === data?.products.length}
+                    checked={products.length > 0 && selectedIds.size === products.length}
                     onCheckedChange={toggleSelectAll}
                   />
                 </TableHead>
