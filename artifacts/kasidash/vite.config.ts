@@ -49,6 +49,17 @@ export default defineConfig({
     host: "0.0.0.0",
     allowedHosts: true,
     fs: { strict: true },
+    // In dev, proxy /api directly to the API server so POST requests
+    // aren't dropped by the Replit shared proxy layer.
+    // In production (Netlify) VITE_API_URL is used instead — no proxy needed.
+    ...(!isProduction && {
+      proxy: {
+        "/api": {
+          target: "http://localhost:8080",
+          changeOrigin: false,
+        },
+      },
+    }),
   },
   preview: {
     port,
