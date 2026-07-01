@@ -54,14 +54,14 @@ export default function Register() {
   return (
     <div className="min-h-screen flex">
       {/* Left panel — brand */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-primary/90 via-primary to-primary/70 flex-col justify-between p-12 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-white/10 via-transparent to-transparent pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-white/5 rounded-full -translate-x-1/2 translate-y-1/2 pointer-events-none" />
+      <div className="hidden lg:flex lg:w-1/2 bg-zinc-950 flex-col justify-between p-12 relative overflow-hidden border-r border-zinc-800">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-primary/10 via-transparent to-transparent pointer-events-none" />
+        <div className="absolute bottom-0 right-0 w-80 h-80 bg-primary/5 rounded-full translate-x-1/3 translate-y-1/3 pointer-events-none" />
 
         <Link href="/store">
           <div className="flex items-center gap-3 cursor-pointer">
-            <div className="w-10 h-10 bg-white/20 backdrop-blur rounded-xl flex items-center justify-center">
-              <span className="text-white font-bold text-lg">K</span>
+            <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center">
+              <span className="text-primary-foreground font-bold text-lg">K</span>
             </div>
             <span className="text-white font-bold text-xl">KBT Store</span>
           </div>
@@ -72,7 +72,7 @@ export default function Register() {
             <h1 className="text-4xl font-bold text-white leading-tight mb-4">
               Join thousands<br />of happy shoppers.
             </h1>
-            <p className="text-white/75 text-lg leading-relaxed">
+            <p className="text-zinc-400 text-lg leading-relaxed">
               Create a free account and get access to the best deals on refurbished tech.
             </p>
           </div>
@@ -84,19 +84,19 @@ export default function Register() {
               { icon: Truck, title: "Saved delivery details", desc: "One-tap checkout every time" },
             ].map(({ icon: Icon, title, desc }) => (
               <div key={title} className="flex items-start gap-3">
-                <div className="w-9 h-9 bg-white/15 rounded-lg flex items-center justify-center shrink-0">
-                  <Icon className="w-4 h-4 text-white" />
+                <div className="w-9 h-9 bg-zinc-800 border border-zinc-700 rounded-lg flex items-center justify-center shrink-0">
+                  <Icon className="w-4 h-4 text-primary" />
                 </div>
                 <div>
-                  <p className="text-white font-medium text-sm">{title}</p>
-                  <p className="text-white/60 text-sm">{desc}</p>
+                  <p className="text-zinc-200 font-medium text-sm">{title}</p>
+                  <p className="text-zinc-500 text-sm">{desc}</p>
                 </div>
               </div>
             ))}
           </div>
         </div>
 
-        <p className="text-white/40 text-sm">© {new Date().getFullYear()} KasiDash & BuildForge</p>
+        <p className="text-zinc-600 text-sm">© {new Date().getFullYear()} KasiDash & BuildForge</p>
       </div>
 
       {/* Right panel — form */}
