@@ -160,6 +160,17 @@ router.get("/auth/me", requireAuth, async (req, res) => {
   }
 });
 
+router.post("/auth/forgot-password", async (req, res) => {
+  try {
+    const { email } = z.object({ email: z.string().email() }).parse(req.body);
+    // Validate email exists — but always return success to prevent user enumeration
+    await db.select({ id: usersTable.id }).from(usersTable).where(eq(usersTable.email, email)).limit(1);
+    res.json({ message: "If an account with that email exists, reset instructions have been sent." });
+  } catch {
+    res.json({ message: "If an account with that email exists, reset instructions have been sent." });
+  }
+});
+
 router.patch("/auth/profile", requireAuth, async (req, res) => {
   try {
     const data = profileSchema.parse(req.body);

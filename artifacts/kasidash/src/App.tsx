@@ -24,6 +24,7 @@ import Settings from "@/pages/settings";
 
 import Login from "@/pages/auth/login";
 import Register from "@/pages/auth/register";
+import ForgotPassword from "@/pages/auth/forgot-password";
 import StoreLanding from "@/pages/store/store-landing";
 import ProductDetail from "@/pages/store/product-detail";
 import CartPage from "@/pages/store/cart-page";
@@ -70,6 +71,7 @@ function Router() {
       {/* Auth pages */}
       <Route path="/auth/login" component={Login} />
       <Route path="/auth/register" component={Register} />
+      <Route path="/auth/forgot-password" component={ForgotPassword} />
 
       {/* Customer store */}
       <Route path="/store" component={StoreLanding} />
